@@ -6,6 +6,13 @@
   <%= f.submit %>
 <% end %>
 
+<div id="tripResults">
+  <h2 id="tripTitle"></h2>
+  <p id="tripDestination"></p>
+  <p id="tripYear"></p>
+  <p id="tripNotes"></p>
+</div>
+
 <br></br>
 
 <% if @trip.errors.any? %>

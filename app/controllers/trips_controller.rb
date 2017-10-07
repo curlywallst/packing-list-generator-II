@@ -1,4 +1,8 @@
 class TripsController < ApplicationController
+  def index
+    @trips = current_user.trips
+    render json: @trips
+  end
 
   def new
     @trip = Trip.new
@@ -11,7 +15,7 @@ class TripsController < ApplicationController
     if @trip.category
       @trip.save
       current_user.trips << @trip
-      redirect_to trip_path(@trip)
+      render json: @trips
     else
       @categories = Category.all
       render 'trips/new'

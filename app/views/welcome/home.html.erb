@@ -3,18 +3,14 @@
 <% if user_signed_in? %>
   <fieldset>
     <legend>List of Trips</legend>
-    <ul>
-      <% current_user.trips.each do |trip| %>
-        <li><%= link_to trip.title+' - '+trip.year.to_s , trip_path(trip) %></li>
-      <% end %>
-    </ul>
+    <div id="trips"></div>
   </fieldset>
 
-  <%= button_to 'Add Trip', new_trip_path, method: :get %>
+  <button id="add">Add Trip</button>
 
   <br></br>
 
-  <%= render '/categories/categories' %>
+  <div id="categories"></div>
 
 <% end %>
 
