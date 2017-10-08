@@ -7,18 +7,16 @@ $(document).ready(function() {
     });
     tripsList += '</ul>'
     $("#trips").html(tripsList);
-    // attachTripListeners();
   });
 
   $.get("/categories", function(response) {
     var categories = response;
     var categoriesList = '<fieldset><legend>Trips by Category</legend><ul>';
     categories.forEach(function(category) {
-      categoriesList += '<li><a href="#" data-id="' + category["id"] + '">' + category["name"] + '</a></li>';
+      categoriesList += '<li><a href="/categories/' + category["id"] + '">' + category["name"] + '</a></li>';
     });
     categoriesList+='</ul></fieldset>'
     $("#categories").html(categoriesList);
-    attachCategoryListeners();
   });
 
   attachListeners()
@@ -42,25 +40,4 @@ function attachListeners() {
       })
     })
   })
-}
-
-// function attachTripListeners() {
-//   $("#trips ul li a").on("click", function() {
-//     var tripId = parseInt($(this).attr("data-id"));
-//     $.get("/trips/" + tripId + ".json", function(response) {
-//         $(this).load("/trips/" + tripId);
-//         debugger
-//         var trip = response
-//         var tripInfo = "<h1><strong>" + trip.title + "</strong> - " + trip.year + " - Destination: " + trip.destination + "</h1>";
-//         $("#tripInformation").html(tripInfo);
-//
-//     });
-//   });
-// }
-
-function attachCategoryListeners() {
-  $("#categories ul li a").on("click", function() {
-    debugger
-
-  });
 }
