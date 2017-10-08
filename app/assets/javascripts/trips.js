@@ -27,7 +27,6 @@ $(document).ready(function() {
 function attachListeners() {
 
   $("#add").on('click', function() {
-    debugger
     $('form').submit(function(event) {
       debugger
       event.preventDefault();
@@ -47,16 +46,14 @@ function attachListeners() {
 
 function attachTripListeners() {
   $("#trips ul li a").on("click", function() {
-    debugger
-    var tripId = parseInt($(".js-trip").attr("data-id")) + 1;
-    $.get("/trips/" + tripId + ".json", function(data) {
-      var trip = data;
+    var tripId = parseInt($(this).attr("data-id"));
+    $.get("/trips/"+tripId, function(response) {
+      var trip = response;
       $(".tripTitle").text(trip["title"]);
       $(".tripDestination").text(trip["destination"]);
       $(".tripYear").text(trip["year"]);
       $(".tripNotes").text(trip["notes"]);
-      // re-set the id to current on the link
-      $(".js-trip").attr("data-id", trip["id"]);
+      $(".js-trip").attr("data-id", tripId);
     });
   });
 }

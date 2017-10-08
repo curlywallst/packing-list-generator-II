@@ -66,9 +66,10 @@ class TripsController < ApplicationController
 
 
   def show
+    binding.pry
     @trip = Trip.find(params[:id])
     @trip_item = TripItem.new
-
+    render json: @trip
   end
 
   def destroy
