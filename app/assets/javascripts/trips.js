@@ -3,26 +3,29 @@ $(document).ready(function() {
     var trips = response;
     var tripsList = '<ul>';
     trips.forEach(function(trip) {
-      tripsList += '<li><a href="#" class="js-trip" data-id="' + trip["id"] + '">' + trip["title"] + '</a>'+ " - " + trip["year"] + '</li>';
+      tripsList += '<li><a href="#" class="js-trips" data-id="' + trip["id"] + '">' + trip["title"] + '</a>'+ " - " + trip["year"] + '</li>';
     });
     tripsList += '</ul>'
     $("#trips").html(tripsList);
+    attachTripListeners();
   });
 
   $.get("/categories", function(response) {
     var categories = response;
     var categoriesList = '<fieldset><legend>Trips by Category</legend><ul>';
     categories.forEach(function(category) {
-      categoriesList += '<li><a href="#" class="js-category" data-id="' + category["id"] + '">' + category["name"] + '</a>' + '</li>';
+      categoriesList += '<li><a href="#" data-id="' + category["id"] + '">' + category["name"] + '</a></li>';
     });
     categoriesList+='</ul></fieldset>'
     $("#categories").html(categoriesList);
+    attachCategoryListeners();
   });
 
   attachListeners()
 })
 
 function attachListeners() {
+
   $("#add").on('click', function() {
     debugger
     $('form').submit(function(event) {
@@ -40,8 +43,10 @@ function attachListeners() {
       })
     })
   })
+}
 
-  $(".js-trip").on("click", function() {
+function attachTripListeners() {
+  $("#trips ul li a").on("click", function() {
     debugger
     var tripId = parseInt($(".js-trip").attr("data-id")) + 1;
     $.get("/trips/" + tripId + ".json", function(data) {
@@ -53,5 +58,12 @@ function attachListeners() {
       // re-set the id to current on the link
       $(".js-trip").attr("data-id", trip["id"]);
     });
+  });
+}
+
+function attachCategoryListeners() {
+  $("#categories ul li a").on("click", function() {
+    debugger
+
   });
 }
