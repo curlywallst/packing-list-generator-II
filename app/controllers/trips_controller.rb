@@ -15,10 +15,10 @@ class TripsController < ApplicationController
     if @trip.category
       @trip.save
       current_user.trips << @trip
-      render json: @trips
+      render json: @trip
     else
       @categories = Category.all
-      render 'trips/new'
+      render json: @trip
     end
   end
 
