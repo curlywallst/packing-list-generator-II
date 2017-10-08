@@ -1,9 +1,7 @@
 
-<h1 class="tripTitle"><%= @trip.Title %> - </h1>
-<h1 class="tripYear"><%= @ptrip.year %> - Destination: </h1>
-<h1 class="tripDestination"><%= @ptrip.destination  %></h1>
+<h1><%=@trip.title%> - <%= @trip.year %> - Destination: <%= @trip.destination %></h2></h1>
 
-<!-- <h2>Trip Category: <%= @trip.category.name%></h2>
+<h2>Trip Category: <%= @trip.category.name%></h2>
 <%= button_to 'Edit Trip Details', edit_trip_path, method: :get %><br />
 <%= button_to "Delete Trip", {:controller => :trips, :action => 'destroy', :id => @trip.id }, :method => :delete %><br />
 
@@ -23,4 +21,4 @@
     <% end %>
     </ul>
   </div>
-<% end %> -->
+<% end %>

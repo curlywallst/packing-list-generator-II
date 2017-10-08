@@ -69,7 +69,12 @@ class TripsController < ApplicationController
     binding.pry
     @trip = Trip.find(params[:id])
     @trip_item = TripItem.new
-    render json: @trip
+    binding.pry
+    respond_to do |format|
+      binding.pry
+      format.html { render :show }
+      format.json { render json: @trip}
+    end
   end
 
   def destroy
