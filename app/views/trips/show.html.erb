@@ -17,6 +17,7 @@
   </fieldset>
 
   <%= button_to 'Display List', trip_items_path(@trip), method: :get %><br />
+
   <br></br>
 
   <fieldset>
@@ -25,7 +26,9 @@
       <legend><h3>Add New Items To The List - Select From Existing <%= @trip.category.name.capitalize %> Items Or Add New Item:</h3></legend>
       <br />
       <% if !@trip_items.nil? %>
-        <%= f.collection_radio_buttons(:item_ids, @items, :id, :name) %>
+        <div id=existing_items>
+          <%= f.collection_radio_buttons(:item_ids, @items, :id, :name) %>
+        </div>
       <% end %>
 
       <%= f.fields_for :items, @trip.items.build do |item_fields| %><br />
@@ -38,8 +41,8 @@
       <br>
       <%= fields_for @trip_item do |ti| %>
         <div id=new_item_quantity>
-        <%= ti.label "Item Quantity: " %>
-        <%= ti.number_field :quantity %><br />
+          <%= ti.label "Item Quantity: " %>
+          <%= ti.number_field :quantity %><br />
         </div>
       <% end %>
       <%= f.submit "Add Item" %>
@@ -63,7 +66,7 @@
     tripId = $('#js-trip')[0].dataset.id
     $.get("/trips/" + tripId + "/items", function(response) {
       var items = response;
-      var itemsList = '<ul>';
+      var itemsList = '<ul id=items>';
       items.forEach(function(item) {
         var i = item.trip_items.find(function(f){
           f.trip_id.toString() === tripId;
@@ -78,19 +81,19 @@
   })
 
   function addEventListener() {
-    $('form').submit(function(event) {
+    $('form.edit_trip').submit(function(event) {
       event.preventDefault();
       var values = $(this).serialize();
       var posting = $.post(this.action, values)
-      debugger
+
       posting.done(function(response) {
         debugger
-        newItem = '<li>' + $('#new_item_name')[0].children[1].value + $('#new_item_quantity')[0].children[1].value + '</li>'
-        $('ul')[1].append(newItem)
+        $('#existing_items input')
+        $('#existing_items labels')
+        html = "<li>" + $('#new_item_name')[0].children[1].value + ' - ' + $('#new_item_quantity')[0].children[1].value + "</li>"
+        $('ul#items').append(html)
       })
-      debugger
     })
   }
-
 
 </script>
