@@ -19,17 +19,18 @@
   <%= button_to 'Display List', trip_items_path(@trip), method: :get %><br />
 
   <br></br>
-  <%= link_to "Change Items Displayed Option (Items in Category or All Items) ", controller: :trips, action: 'display_option', :id => @trip.id %>
+
+  <button class="change_display" data-id=<%=@trip.id%>>Toggle All/Category Items</button>
+  <!-- <%= link_to "Change Items Displayed Option (Items in Category or All Items) ", controller: :trips, action: 'display_option', :id => @trip.id, :class => "change_display"%> -->
+
   <fieldset>
     <%= form_for @trip do |f| %>
       <legend><h3>Add New Items To The List - Select From Existing <%= @trip.category.name.capitalize %> Items Or Add New Item:</h3></legend>
       <% if !@trip_items.nil? %>
         <div id=existing_items>
           <% if @trip.display_option == "category_items" %>
-            <!-- <legend><h3>Add New Items To The List - Select From Existing <%= @trip.category.name.capitalize %> Items Or Add New Item:</h3></legend> -->
             <%= render '/items/category_items', f: f  %>
           <% else %>
-            <!-- <legend><h3>Add New Items To The List - Select From All Items Or Add New Item:</h3></legend> -->
             <%= render 'items/all_items', f: f  %>
           <% end %>
         </div>
@@ -82,6 +83,7 @@
       itemsList += '</ul>'
       $("#items").html(itemsList);
       addEventListener()
+      existingItemsDisplayedListener()
     });
   })
 
@@ -97,14 +99,28 @@
         for (var i=0; i < item_indexes.length; i++) {
           if (item_indexes[i].checked) {
             name = item_indexes[i].attributes.name.ownerElement.labels[0].innerText
+            item_indexes[i].checked = false
           }
         }
-        if (!name) { name = $('#new_item_name')[0].children[1].value}
-        debugger
+        if (!name) {
+          name = $('#new_item_name')[0].children[1].value
+          $('#new_item_name')[0].children[1].value = ""
+        }
         html = "<li>" + name + ' - ' + $('#new_item_quantity')[0].children[1].value + "</li>"
+        $('#new_item_quantity')[0].children[1].value = 1
         $('ul#items').append(html)
       })
     })
+  }
+
+  function existingItemsDisplayedListener() {
+    $(".change_display").on("click", function() {
+      tripId = parseInt(this.dataset.id)
+      $.get("/trips/"+tripId+"/display_option", function(data) {
+        debugger
+      });
+    });
+
   }
 
 </script>
