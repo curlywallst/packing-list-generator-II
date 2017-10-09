@@ -6,6 +6,7 @@
 <%= button_to "Delete Trip", {:controller => :trips, :action => 'destroy', :id => @trip.id }, :method => :delete %><br />
 
 <% if user_signed_in? %>
+
   <fieldset>
     <legend>Items To Pack:</legend>
     <ul>
@@ -20,8 +21,14 @@
 
   <br></br>
 
-  <button class="change_display" data-id=<%=@trip.id%>>Toggle All/Category Items</button>
-  <!-- <%= link_to "Change Items Displayed Option (Items in Category or All Items) ", controller: :trips, action: 'display_option', :id => @trip.id, :class => "change_display"%> -->
+  <%= form_for @trip do |f| %>
+     <div>Toggle All/Category Items:
+    <%= f.radio_button(:display_option, "category_items") %>
+    <%= f.label(:display_option_category_items, "Category Items") %>
+    <%= f.radio_button(:display_option, "all_items") %>
+    <%= f.label(:display_option_all_items, "All Items") %>
+    <%= f.submit "Update", :class => 'change_display' %></div>
+    <% end %>
 
   <fieldset>
     <%= form_for @trip do |f| %>
@@ -50,7 +57,7 @@
           <%= ti.number_field :quantity %><br />
         </div>
       <% end %>
-      <%= f.submit "Add Item" %>
+      <%= f.submit "Add Item", :class => 'edit_items' %>
     <% end %>
   </fieldset>
 <% end %>
@@ -87,8 +94,10 @@
     });
   })
 
+
   function addEventListener() {
-    $('form.edit_trip').submit(function(event) {
+    $('form.edit_items').submit(function(event) {
+
       event.preventDefault();
       var values = $(this).serialize();
       var posting = $.post(this.action, values)
@@ -114,13 +123,12 @@
   }
 
   function existingItemsDisplayedListener() {
-    $(".change_display").on("click", function() {
-      tripId = parseInt(this.dataset.id)
-      $.get("/trips/"+tripId+"/display_option", function(data) {
-        debugger
-      });
+    $("form.change_display").submit(function(event) {
+      event.preventDefault();
+      debugger
     });
-
   }
+
+
 
 </script>
