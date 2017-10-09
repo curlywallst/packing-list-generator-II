@@ -1,15 +1,50 @@
 
-<h1><%=@trip.title%> - <%= @trip.year %> - Destination: <%= @trip.destination %></h2></h1>
+<h1 id="js-trip" data-id=<%= @trip.id %>><%=@trip.title%> - <%= @trip.year %> - Destination: <%= @trip.destination %></h2></h1>
 
 <h2>Trip Category: <%= @trip.category.name%></h2>
 <%= button_to 'Edit Trip Details', edit_trip_path, method: :get %><br />
 <%= button_to "Delete Trip", {:controller => :trips, :action => 'destroy', :id => @trip.id }, :method => :delete %><br />
 
 <% if user_signed_in? %>
-    <%= render 'items/items' %>
-    <%= button_to 'Display List', trip_items_path(@trip), method: :get %><br />
-    <br></br>
-    <%= render 'items/add_items' %>
+  <fieldset>
+    <legend>Items To Pack:</legend>
+    <ul>
+      <div id="items"></div>
+
+      <div id="added_items"></div>
+    </ul>
+    <p>Trip Notes: <%= @trip.notes %></p>
+  </fieldset>
+
+  <%= button_to 'Display List', trip_items_path(@trip), method: :get %><br />
+  <br></br>
+
+  <fieldset>
+
+    <%= form_for @trip do |f| %>
+      <legend><h3>Add New Items To The List - Select From Existing <%= @trip.category.name.capitalize %> Items Or Add New Item:</h3></legend>
+      <br />
+      <% if !@trip_items.nil? %>
+        <%= f.collection_radio_buttons(:item_ids, @items, :id, :name) %>
+      <% end %>
+
+      <%= f.fields_for :items, @trip.items.build do |item_fields| %><br />
+        <div id=new_item_name>
+          <%= f.label "New Item Name" %>
+          <%= item_fields.text_field :name %>
+        </div>
+      <% end %>
+
+      <br>
+      <%= fields_for @trip_item do |ti| %>
+        <div id=new_item_quantity>
+        <%= ti.label "Item Quantity: " %>
+        <%= ti.number_field :quantity %><br />
+        </div>
+      <% end %>
+      <%= f.submit "Add Item" %>
+    <% end %>
+  </fieldset>
 <% end %>
 
 <% if @trip.errors.any? %>
@@ -22,3 +57,40 @@
     </ul>
   </div>
 <% end %>
+
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    tripId = $('#js-trip')[0].dataset.id
+    $.get("/trips/" + tripId + "/items", function(response) {
+      var items = response;
+      var itemsList = '<ul>';
+      items.forEach(function(item) {
+        var i = item.trip_items.find(function(f){
+          f.trip_id.toString() === tripId;
+            return f
+        })
+        itemsList += '<li>' + item.name + ' - ' + i.quantity + '</li>';
+      });
+      itemsList += '</ul>'
+      $("#items").html(itemsList);
+      addEventListener()
+    });
+  })
+
+  function addEventListener() {
+    $('form').submit(function(event) {
+      event.preventDefault();
+      var values = $(this).serialize();
+      var posting = $.post(this.action, values)
+      debugger
+      posting.done(function(response) {
+        debugger
+        newItem = '<li>' + $('#new_item_name')[0].children[1].value + $('#new_item_quantity')[0].children[1].value + '</li>'
+        $('ul')[1].append(newItem)
+      })
+      debugger
+    })
+  }
+
+
+</script>

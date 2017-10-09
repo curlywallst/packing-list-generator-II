@@ -1,8 +1,11 @@
 class ItemsController < ApplicationController
 
   def index
+
     @trip = Trip.find(params[:trip_id])
     @items = @trip.items
+
+    render json: @items
   end
 
   def edit

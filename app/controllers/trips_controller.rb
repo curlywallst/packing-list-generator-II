@@ -15,10 +15,10 @@ class TripsController < ApplicationController
     if @trip.category
       @trip.save
       current_user.trips << @trip
-      render json: @trip
+      redirect_to trip_path(@trip)
     else
       @categories = Category.all
-      render json: @trip
+      render 'trips/new'
     end
   end
 
@@ -66,15 +66,11 @@ class TripsController < ApplicationController
 
 
   def show
-    binding.pry
+
     @trip = Trip.find(params[:id])
+    @items = @trip.items_in_category
+    @trip_items = @trip.items
     @trip_item = TripItem.new
-    binding.pry
-    respond_to do |format|
-      binding.pry
-      format.html { render :show }
-      format.json { render json: @trip}
-    end
   end
 
   def destroy

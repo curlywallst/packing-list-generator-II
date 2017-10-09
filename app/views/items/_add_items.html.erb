@@ -1,14 +1,12 @@
   <div class="field_with_errors">
     <fieldset>
-      <%= link_to "Change Items Displayed Option (Items in Category or All Items) ", controller: :trips, action: 'display_option', :id => @trip.id %>
-      <%= form_for @trip do |f| %>
-      <% if @trip.display_option == "category_items" %>
+  <%= binding.pry -%>
+      <%= form_for (@trip_items) do |f| %>
         <legend><h3>Add New Items To The List - Select From Existing <%= @trip.category.name.capitalize %> Items Or Add New Item:</h3></legend>
-        <%= render '/items/category_items', f: f  %>
-      <% else %>
-        <legend><h3>Add New Items To The List - Select From All Items Or Add New Item:</h3></legend>
-        <%= render 'items/all_items', f: f  %>
-      <% end %>
+        <br />
+        <% if !@trip_items.nil? %>
+          <%= f.collection_radio_buttons(:item_ids, @items, :id, :name) %>
+        <% end %>
 
       <%= f.fields_for :items, @trip.items.build do |item_fields| %><br />
         <%= f.label "New Item Name" %>
@@ -16,13 +14,11 @@
       <% end %>
 
       <br>
-
       <%= fields_for @trip_item do |ti| %>
         <%= ti.label "Item Quantity: " %>
         <%= ti.number_field :quantity %><br />
       <% end %>
-      <%= f.button "Add Item" %>
+      <%= f.submit "Add Item" %>
     <% end %>
-
   </fieldset>
 </div>
