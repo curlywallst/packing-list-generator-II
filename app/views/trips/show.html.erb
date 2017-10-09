@@ -10,24 +10,28 @@
     <legend>Items To Pack:</legend>
     <ul>
       <div id="items"></div>
-
       <div id="added_items"></div>
     </ul>
+
     <p>Trip Notes: <%= @trip.notes %></p>
   </fieldset>
 
   <%= button_to 'Display List', trip_items_path(@trip), method: :get %><br />
 
   <br></br>
-
+  <%= link_to "Change Items Displayed Option (Items in Category or All Items) ", controller: :trips, action: 'display_option', :id => @trip.id %>
   <fieldset>
-
     <%= form_for @trip do |f| %>
       <legend><h3>Add New Items To The List - Select From Existing <%= @trip.category.name.capitalize %> Items Or Add New Item:</h3></legend>
-      <br />
       <% if !@trip_items.nil? %>
         <div id=existing_items>
-          <%= f.collection_radio_buttons(:item_ids, @items, :id, :name) %>
+          <% if @trip.display_option == "category_items" %>
+            <!-- <legend><h3>Add New Items To The List - Select From Existing <%= @trip.category.name.capitalize %> Items Or Add New Item:</h3></legend> -->
+            <%= render '/items/category_items', f: f  %>
+          <% else %>
+            <!-- <legend><h3>Add New Items To The List - Select From All Items Or Add New Item:</h3></legend> -->
+            <%= render 'items/all_items', f: f  %>
+          <% end %>
         </div>
       <% end %>
 
@@ -62,6 +66,7 @@
 <% end %>
 
 <script type="text/javascript" charset="utf-8">
+
   $(document).ready(function() {
     tripId = $('#js-trip')[0].dataset.id
     $.get("/trips/" + tripId + "/items", function(response) {
@@ -95,6 +100,7 @@
           }
         }
         if (!name) { name = $('#new_item_name')[0].children[1].value}
+        debugger
         html = "<li>" + name + ' - ' + $('#new_item_quantity')[0].children[1].value + "</li>"
         $('ul#items').append(html)
       })

@@ -40,7 +40,7 @@ class TripsController < ApplicationController
         redirect_to trip_path(@trip)
       else
         @trip_item = TripItem.new
-        render '/trips/show'
+        render '/trips/show', layout: false
       end
     else
       @trip_check = Trip.new (trip_params)
@@ -66,7 +66,6 @@ class TripsController < ApplicationController
 
 
   def show
-
     @trip = Trip.find(params[:id])
     @items = @trip.items_in_category
     @trip_items = @trip.items
