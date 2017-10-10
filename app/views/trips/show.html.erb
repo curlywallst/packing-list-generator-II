@@ -20,7 +20,7 @@
 
   <br></br>
 
-  <%= form_for @trip, html: {id: "change_display" }  do |f| %>
+  <%= form_for @trip, html: {id: "change_display"}  do |f| %>
      <div>Toggle All/Category Items
     <%= f.radio_button(:display_option, "category_items") %>
     <%= f.label(:display_option_category_items, "Category Items") %>
@@ -121,32 +121,18 @@
   }
 
   function existingItemsDisplayedListener() {
-    $("form#change_display").submit(function(event) {
-      event.preventDefault();
-      tripId = parseInt(this.dataset.id)
-      debugger
-      if ($(this)[0].dataset.displayoption = "all_items") {
-        $(this)[0].dataset.displayoption = "category_items"
-      } else {
-        $(this)[0].dataset.displayoption = "all_items"
-      }
-      debugger
-      var display = $(this)[0].dataset.displayoption
-      var values = $(this).serialize();
-      postingDisplay = $.ajax(`/trips/${tripId}`, { type: 'POST', data: { _method: 'PATCH', "display_option": display } });
-      // var postingDisplay = $.ajax({
-      //   type: 'PATCH',
-      //   url: `/trips/${tripId}`,
-      //   dataType: 'json',
-      //   data: {"display_option": display}
-      // });
-      // var postingDisplay = $.ajax('/trips', { type: 'POST', data: { _method: 'PATCH' } });
-      // var postingDisplay = $.post(this.action, values);
-      debugger
-      postingDisplay.done(function(response){
-        debugger
-      })
-    });
-  }
+  //   $("form#change_display").submit(function(event) {
+  //     event.preventDefault();
+  //     var values = $(this).serialize();
+  //     var postingDisplay = $.ajax(
+  //       {type: "PATCH",url: this.action,
+  //       data: {"display_option": this.displayoption}
+  //     )
+  //       .success(function(json) {
+  //         debugger;
+  //     }
+  //   );
+  // })
+}
 
 </script>
