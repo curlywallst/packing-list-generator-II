@@ -1,9 +1,15 @@
 class ItemsController < ApplicationController
 
   def index
+    if params[:trip_id]
+      @trip = Trip.find(params[:trip_id])
+      @items = @trip.items
+    elsif params[:category_id]
+      @items = Category.find(params[:category_id]).items
+    else
 
-    @trip = Trip.find(params[:trip_id])
-    @items = @trip.items
+      @items = current_user.trips.collect{|t| t.items}.flatten.uniq
+    end
 
     render json: @items
   end

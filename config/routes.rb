@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   resources :trips do
     resources :items, only: [:index, :edit, :update, :destroy]
   end
-
+  get '/items' => 'items#index'
+  
   get '/trips/:id/display_option', to: 'trips#display_option'
 
 

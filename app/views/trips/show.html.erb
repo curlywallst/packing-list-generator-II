@@ -20,15 +20,7 @@
 
   <br></br>
 
-  <%= form_for @trip, html: {id: "change_display"}  do |f| %>
-     <div>Toggle All/Category Items
-    <%= f.radio_button(:display_option, "category_items") %>
-    <%= f.label(:display_option_category_items, "Category Items") %>
-    <%= f.radio_button(:display_option, "all_items") %>
-    <%= f.label(:display_option_all_items, "All Items") %>
-
-    <%= f.submit "Update" %></div>
-  <% end %>
+  Show Items By: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector">Category</a> or  <a href="#" data-label="all" class="item-selector">All</a>
 
   <fieldset>
     <%= form_for @trip, html: {id: "edit_trip_items" } do |f| %>
@@ -120,6 +112,30 @@
     })
   }
 
+  $(function(){
+    $("a.item-selector").on("click", function(e){
+      e.preventDefault();
+
+      if ($(this).data("label") === 'all'){
+        $.get("/items.json").success(addItemsToExistingForm)
+
+      } else {
+        var categoryID = $(this).data("category-id");
+        $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
+      }
+      // fire our ajax.
+
+    })
+  })
+
+  function addItemsToExistingForm(items){
+    itemsHTML = ""
+    items.forEach(function(item) {
+      itemsHTML += `<input type="radio" value="${item.id}" name="trip[item_ids]" id="trip_item_ids_${item.id}"><label for="trip_item_ids_${item.id}">${item.name}</label>`
+    })
+
+    $("#existing_items").html(itemsHTML)
+  }
   function existingItemsDisplayedListener() {
   //   $("form#change_display").submit(function(event) {
   //     event.preventDefault();
