@@ -28,11 +28,11 @@ class TripsController < ApplicationController
   end
 
   def update
+
     if params[:trip][:display_option].present?
       @trip = Trip.find(params[:id])
       @trip.display_option = params[:trip][:display_option]
       @trip.save
-      redirect_to trip_path(@trip)
     elsif params[:trip][:items_attributes].present?
       @trip = Trip.find(params[:id])
       @trip.update_items(params[:trip][:item_ids], params[:trip][:items_attributes], params[:trip_item][:quantity])
@@ -40,7 +40,7 @@ class TripsController < ApplicationController
         redirect_to trip_path(@trip)
       else
         @trip_item = TripItem.new
-        render '/trips/show', layout: false
+        render '/trips/show'
       end
     else
       @trip_check = Trip.new (trip_params)
@@ -63,7 +63,6 @@ class TripsController < ApplicationController
     @trip = Trip.find(params[:id])
     render 'trips/display_option'
   end
-
 
   def show
     @trip = Trip.find(params[:id])
