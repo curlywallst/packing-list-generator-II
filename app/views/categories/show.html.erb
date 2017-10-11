@@ -22,7 +22,6 @@
 
 <script type="text/javascript" charset="utf-8">
   $(function () {
-
     $.get("/categories", function(response) {
       var categories = response;
       var categoriesList = '<fieldset><legend>Trips by Category</legend><ul>';
@@ -38,16 +37,17 @@
   function addEventListener() {
     $(function(){
       $("div#categories_list").on("click", "ul li a.category-selector", function(e) {
-          e.preventDefault();
-        debugger
-        // var Id = parseInt($(".js-next").attr("data-id")) + 1;
-        // $.get("/trips/" + nextId + ".json", function(data) {
-        //   $(".authorName").text(data["author"]["name"]);
-        //   $(".postTitle").text(data["title"]);
-        //   $(".postBody").text(data["description"]);
-        //   // re-set the id to current on the link
-        //   $(".js-next").attr("data-id", data["id"]);
-        // });
+        e.preventDefault();
+        category_id = parseInt($(this)[0].attributes[2].value)
+        $.get("/trips", function(response) {
+          itemsHTML = ""
+          response.forEach(function(element) {
+           if (element.category_id === category_id) {
+              itemsHTML += `<li><a href="/trips/${element.id}">${element.title} - ${element.year}</a></li>`
+            }
+          })
+          $("#category_trips").html(itemsHTML)
+        });
       });
     });
   }
