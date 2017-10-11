@@ -1,4 +1,0 @@
-<br />
-<% if !@trip.items_in_category.nil?  %>
-  <%= f.collection_radio_buttons(:item_ids, @trip.items_in_category, :id, :name) %>
-<% end %>

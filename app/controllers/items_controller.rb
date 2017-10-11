@@ -26,7 +26,6 @@ class ItemsController < ApplicationController
   end
 
   def update
-    binding.pry
     @item_check = Item.new(:name => params[:item][:items][:name])
     @trip = Trip.find(params[:trip_id])
     @trip_item = @trip.trip_items.find_by(item_id: params[:id])

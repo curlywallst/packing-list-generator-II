@@ -72,7 +72,6 @@
       itemsList += '</ul>'
       $("#items").html(itemsList);
       var categoryID = parseInt($('#existing_items')[0].dataset.label);
-      debugger
       $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
       addEventListener()
     });

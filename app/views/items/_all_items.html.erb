@@ -1,4 +1,0 @@
-<br />
-<% if !@trip.items_of_user.nil?  %>
-  <%= f.collection_radio_buttons(:item_ids, @trip.items_of_user, :id, :name) %>
-<% end %>
