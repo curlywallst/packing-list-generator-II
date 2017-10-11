@@ -12,6 +12,7 @@ class TripsController < ApplicationController
   def create
     @trip = Trip.create(trip_params)
     @trip.add_category(params[:trip][:category_id], params[:trip][:categories][:name])
+    @trip.display_option = "category"
     if @trip.category
       @trip.save
       current_user.trips << @trip
@@ -20,6 +21,7 @@ class TripsController < ApplicationController
       @categories = Category.all
       render 'trips/new'
     end
+
   end
 
   def edit

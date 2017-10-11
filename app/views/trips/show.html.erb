@@ -16,7 +16,7 @@
     <p>Trip Notes: <%= @trip.notes %></p>
   </fieldset>
 
-  <%= button_to 'Display List', trip_items_path(@trip), method: :get %><br />
+  <%= button_to 'Display List', items_list_path(@trip), method: :get %><br />
 
   <br></br>
 
@@ -82,7 +82,6 @@
       itemsList += '</ul>'
       $("#items").html(itemsList);
       addEventListener()
-      existingItemsDisplayedListener()
     });
   })
 
@@ -136,19 +135,6 @@
 
     $("#existing_items").html(itemsHTML)
   }
-  function existingItemsDisplayedListener() {
-  //   $("form#change_display").submit(function(event) {
-  //     event.preventDefault();
-  //     var values = $(this).serialize();
-  //     var postingDisplay = $.ajax(
-  //       {type: "PATCH",url: this.action,
-  //       data: {"display_option": this.displayoption}
-  //     )
-  //       .success(function(json) {
-  //         debugger;
-  //     }
-  //   );
-  // })
-}
+
 
 </script>
