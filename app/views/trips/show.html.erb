@@ -114,16 +114,13 @@
   $(function(){
     $("a.item-selector").on("click", function(e){
       e.preventDefault();
-
       if ($(this).data("label") === 'all'){
         $.get("/items.json").success(addItemsToExistingForm)
-
       } else {
         var categoryID = $(this).data("category-id");
         $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
       }
       // fire our ajax.
-
     })
   })
 
