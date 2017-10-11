@@ -17,7 +17,7 @@
 </div>
 
 <%= button_to "Delete", {:controller => :items, :action => 'destroy', :id => @item.id }, :method => :delete %><br />
-<%= button_to 'Back to List', trip_items_path(@trip), method: :get %><br />
+<%= button_to 'Back to List', items_list_path(@trip), method: :get %><br />
 
 
 <br />
