@@ -18,26 +18,16 @@
 
   <%= button_to 'Display List', items_list_path(@trip), method: :get %><br />
 
-  <br></br>
-
-  Show Items By: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector">Category</a> or  <a href="#" data-label="all" class="item-selector">All</a>
-
   <fieldset>
     <%= form_for @trip, html: {id: "edit_trip_items" } do |f| %>
-      <legend><h5>Add New Items To The List - Select From Existing <%= @trip.category.name.capitalize %> Items Or Add New Item:</h5></legend>
-      <% if !@trip_items.nil? %>
-        <div id=existing_items>
-          <% if @trip.display_option == "category_items" %>
-            <%= render '/items/category_items', f: f  %>
-          <% else %>
-            <%= render 'items/all_items', f: f  %>
-          <% end %>
-        </div>
-      <% end %>
+      <legend><h5>Add Items To The List</h5></legend>
+      <div>Select From Existing: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector"><%= @trip.category.name.capitalize %> Trip Items</a> or <a href="#" data-label="all" class="item-selector">All Items</a></div><br />
+
+      <div id=existing_items data-label=<%= @trip.category_id%> ></div>
 
       <%= f.fields_for :items, @trip.items.build do |item_fields| %><br />
         <div id=new_item_name>
-          <%= f.label "New Item Name" %>
+          <%= f.label "Add New Item: Name" %>
           <%= item_fields.text_field :name %>
         </div>
       <% end %>
@@ -81,6 +71,9 @@
       });
       itemsList += '</ul>'
       $("#items").html(itemsList);
+      var categoryID = parseInt($('#existing_items')[0].dataset.label);
+      debugger
+      $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
       addEventListener()
     });
   })

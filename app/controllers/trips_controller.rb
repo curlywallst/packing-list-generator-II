@@ -63,11 +63,6 @@ class TripsController < ApplicationController
     end
   end
 
-  def display_option
-    @trip = Trip.find(params[:id])
-    render 'trips/display_option'
-  end
-
   def show
     @trip = Trip.find(params[:id])
     @items = @trip.items_in_category
