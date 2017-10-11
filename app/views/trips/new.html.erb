@@ -1,7 +1,19 @@
   <%= form_for @trip do |f| %>
     <%= render 'form', f: f %>
     <br></br>
-    <%= render 'categories/add_categories', f: f %>
+    <div class="field_with_errors">
+      <fieldset>
+        <legend>Select Category</legend>
+
+        <%= f.collection_select(:category_id, current_user.categories.uniq, :id, :name, {:include_blank => true, :prompt => 'Existing Categories'}) %>
+
+        <%= f.fields_for :categories, @categories.build do |categories_fields| %><br />
+        <%= f.label "New category " %>
+        <%= categories_fields.text_field :name %><br />
+        <% end %>
+      </fieldset>
+    </div>
+
     <br></br>
   <%= f.submit %>
 <% end %>
