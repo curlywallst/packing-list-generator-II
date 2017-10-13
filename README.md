@@ -1,7 +1,7 @@
-# Travel Packing List Generator
-Flatiron school Rails Final Project
+# Packing List Generator
+Flatiron school Rails App with a jQuery Front End Final Project
 
-Travel Packing List Generator
+Packing List Generator
 
 This is a Ruby on Rails application that allows users to create accounts and add information about their trips and generate packing lists.  The Models included are:
 
