@@ -5,43 +5,44 @@
 <%= button_to "Delete Trip", {:controller => :trips, :action => 'destroy', :id => @trip.id }, :method => :delete %><br />
 
 <% if user_signed_in? %>
-<fieldset>
-  <legend>Items To Pack:</legend>
-  <ul>
+  <fieldset>
+    <legend>Items To Pack:</legend>
     <div id="items"></div>
-    <div id="added_items"></div>
-  </ul>
 
-  <p>Trip Notes: <%= @trip.notes %></p>
-</fieldset>
+    <p>Trip Notes: <%= @trip.notes %></p>
+  </fieldset>
 
-<%= button_to 'Display List', trip_items_path(@trip), method: :get, params: { display: "display"} %><br />
+  <%= button_to 'Display List', trip_items_path(@trip), method: :get, params: { display: "display"} %><br />
 
-<fieldset>
-  <div id="trip" data-id=<%=@trip.id%> ></div>
-  <%= form_for @trip, html: {id: "add_items"} do |f| %>
-    <legend><h5>Add Items To The List</h5></legend>
-    <div>Select From Existing: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector"><%= @trip.category.name.capitalize %> Trip Items</a> or <a href="#" data-label="all" class="item-selector">All Items</a></div><br />
+  <fieldset>
+    <div id="trip" data-id=<%=@trip.id%> ></div>
+    <%= form_for @trip, html: {id: "add_items"} do |f| %>
 
-    <div id=existing_items data-label=<%= @trip.category_id%> ></div>
+      <legend><h5>Add Items To The List</h5></legend>
+      <div>Select From Existing: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector"><%= @trip.category.name.capitalize %> Trip Items</a> or <a href="#" data-label="all" class="item-selector">All Items</a></div><br />
 
-    <%= f.fields_for :items, @trip.items.build do |item_fields| %><br />
-      <div id=new_item_name>
-        <%= f.label "Add New Item: Name" %>
-        <%= item_fields.text_field :name %>
-      </div>
+      <div id=existing_items data-label=<%= @trip.category_id%> ></div>
+
+      <%= f.fields_for :items, @trip.items.build do |item_fields| %><br />
+        <div id=new_item_name>
+          <%= f.label "Add New Item: Name" %>
+          <%= item_fields.text_field :name %>
+        </div>
+      <% end %>
+
+      <br>
+
+      <%= fields_for @trip_item do |ti| %>
+        <div id=new_item_quantity>
+          <%= ti.label "Item Quantity: " %>
+          <%= ti.number_field :quantity %><br />
+        </div>
+      <% end %>
+
+      <%= f.submit "Add Item" %>
     <% end %>
+  </fieldset>
 
-    <br>
-    <%= fields_for @trip_item do |ti| %>
-      <div id=new_item_quantity>
-        <%= ti.label "Item Quantity: " %>
-        <%= ti.number_field :quantity %><br />
-      </div>
-    <% end %>
-    <%= f.submit "Add Item" %>
-  <% end %>
-</fieldset>
 <% end %>
 
 <% if @trip.errors.any? %>

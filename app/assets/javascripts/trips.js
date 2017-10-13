@@ -1,5 +1,3 @@
-
-
 function addEventListener() {
   $('form#add_items').submit(function(event) {
     event.preventDefault();

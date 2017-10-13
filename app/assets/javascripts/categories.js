@@ -1,19 +1,11 @@
 $(function () {
-  $.get("/categories", function(response) {
-    var categories = response;
-    var categoriesList = '<fieldset><legend>Trips by Category</legend><ul>';
-    categories.forEach(function(category) {
-      categoriesList += '<li><a href="#" class="category-selector" data-id="' + category.id + '">' + category.name + '</a></li>'
-    });
-    categoriesList+='</ul></fieldset>'
-    $("#categories_list").html(categoriesList);
-  });
-  addEventListener()
+  $.get("/categories").success(addCategoriessToPage)
+  addCategoryEventListener()
 });
 
-function addEventListener() {
+function addCategoryEventListener() {
   $(function(){
-    $("div#categories_list").on("click", "ul li a.category-selector", function(e) {
+    $("div#categories").on("click", "ul li a.category-selector", function(e) {
       e.preventDefault();
       category_id = parseInt($(this)[0].attributes[2].value)
       $.get("/trips", function(response) {
