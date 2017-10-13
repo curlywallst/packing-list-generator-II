@@ -16,10 +16,11 @@
     <p>Trip Notes: <%= @trip.notes %></p>
   </fieldset>
 
-  <%= button_to 'Display List', items_list_path(@trip), method: :get %><br />
+  <%= button_to 'Display List', trip_items_path(@trip), method: :get, params: { display: "display"} %><br />
 
   <fieldset>
-    <%= form_for @trip, html: {id: "edit_trip_items" } do |f| %>
+    <div id="trip" data-id=<%=@trip.id%> ></div>
+    <%= form_for @trip, html: {id: "add_items"} do |f| %>
       <legend><h5>Add Items To The List</h5></legend>
       <div>Select From Existing: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector"><%= @trip.category.name.capitalize %> Trip Items</a> or <a href="#" data-label="all" class="item-selector">All Items</a></div><br />
 
@@ -59,46 +60,37 @@
 
   $(document).ready(function() {
     tripId = $('#js-trip')[0].dataset.id
-    $.get("/trips/" + tripId + "/items", function(response) {
-      var items = response;
-      var itemsList = '<ul id=items>';
-      items.forEach(function(item) {
-        var i = item.trip_items.find(function(f){
-          f.trip_id.toString() === tripId;
-            return f
-        })
-        itemsList += '<li>' + item.name + ' - ' + i.quantity + '</li>';
-      });
-      itemsList += '</ul>'
-      $("#items").html(itemsList);
-      var categoryID = parseInt($('#existing_items')[0].dataset.label);
-      $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
-      addEventListener()
-    });
+    listItems(tripId)
+    var categoryID = parseInt($('#existing_items')[0].dataset.label);
+    $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
+    addEventListener()
   })
 
   function addEventListener() {
-    $('form#edit_trip_items').submit(function(event) {
+    $('form#add_items').submit(function(event) {
       event.preventDefault();
       var values = $(this).serialize();
       var postingItems = $.post(this.action, values)
-
+      tripId = parseInt($('#trip')[0].dataset.id)
       postingItems.done(function(response) {
         var item_indexes = $('#existing_items input')
         var name = ""
         for (var i=0; i < item_indexes.length; i++) {
           if (item_indexes[i].checked) {
-            name = item_indexes[i].attributes.name.ownerElement.labels[0].innerText
+            name = item_indexes[i].name
             item_indexes[i].checked = false
           }
         }
+
         if (!name) {
           name = $('#new_item_name')[0].children[1].value
           $('#new_item_name')[0].children[1].value = ""
+          html = "<li>" + name + ' - ' + $('#new_item_quantity')[0].children[1].value + "</li>"
+          $('#new_item_quantity')[0].children[1].value = 1
+          $('ul#items').append(html)
+        } else {
+          listItems(tripId)
         }
-        html = "<li>" + name + ' - ' + $('#new_item_quantity')[0].children[1].value + "</li>"
-        $('#new_item_quantity')[0].children[1].value = 1
-        $('ul#items').append(html)
       })
     })
   }
@@ -117,13 +109,45 @@
   })
 
   function addItemsToExistingForm(items){
-    itemsHTML = ""
+    function Item(itemJSON){
+      this.id = itemJSON.id
+      this.name = itemJSON.name
+    }
+
+    Item.prototype.itemFormHTML = function(){
+      return `<input type="radio" value="${this.id}" name="trip[item_ids]" id="trip_item_ids_${this.id}">  ${this.name}   `
+    }
+
+    actualItems = []
+
     items.forEach(function(item) {
-      itemsHTML += `<input type="radio" value="${item.id}" name="trip[item_ids]" id="trip_item_ids_${item.id}"><label for="trip_item_ids_${item.id}">${item.name}</label>`
+      actualItem = new Item(item)
+      actualItems.push(actualItem)
     })
 
-    $("#existing_items").html(itemsHTML)
+    html = " "
+
+    actualItems.forEach(function(actualItem) {
+      html += actualItem.itemFormHTML()
+    })
+
+    $("#existing_items").html(html)
   }
+
+  function listItems(tripId) {
+    $.get("/trips/" + tripId + "/items", function(response) {
+      var items = response;
+      var itemsList = '<ul id=items>';
+      items.forEach(function(item) {
+        var i = item.trip_items.find(function(tripItem) {return tripItem.trip_id === parseInt(tripId)})
+        itemsList += '<li>' + item.name + ' - ' + i.quantity + '</li>';
+      });
+      itemsList += '</ul>'
+      $("#items").html(itemsList);
+    })
+  }
+
+
 
 
 </script>

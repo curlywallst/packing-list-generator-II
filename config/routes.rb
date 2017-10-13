@@ -6,9 +6,8 @@ Rails.application.routes.draw do
   resources :trips do
     resources :items, only: [:index, :edit, :update, :destroy]
   end
-  
+
   get '/items' => 'items#index'
-  get '/items/list' => 'items#list'
 
   root 'welcome#home'
 

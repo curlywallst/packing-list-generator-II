@@ -30,10 +30,15 @@ class TripsController < ApplicationController
   end
 
   def update
-
     if params[:trip][:items_attributes].present?
       @trip = Trip.find(params[:id])
-      @trip.update_items(params[:trip][:item_ids], params[:trip][:items_attributes], params[:trip_item][:quantity])
+      @trip_item = @trip.trip_items.find_by(item_id: params[:trip][:item_ids])
+      if !!@trip_item
+        @trip_item.quantity += params[:trip_item][:quantity].to_i
+        @trip_item.save
+      else
+        @trip.update_items(params[:trip][:item_ids], params[:trip][:items_attributes], params[:trip_item][:quantity])
+      end
       if @item.present?
         redirect_to trip_path(@trip)
       else

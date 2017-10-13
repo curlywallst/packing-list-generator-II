@@ -27,10 +27,10 @@ class Trip < ActiveRecord::Base
       else item_ids.present?
         @item = Item.find(item_ids)
       end
-      @trip_item = TripItem.new(trip_id: self.id, item_id: @item.id, quantity: trip_item_quantity)
+      @trip_item = TripItem.new(trip_id: self.id, item_id: @item.id, quantity: trip_item_quantity.to_i)
       @trip_item.save
     else
-        @item.valid?
+      @item.valid?
     end
   end
 
