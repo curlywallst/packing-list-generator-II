@@ -1,22 +1,30 @@
-$(document).ready(function() {
-  $.get("/trips", function(response) {
-    var trips = response;
-    var tripsList = '<ul>';
-    trips.forEach(function(trip) {
-      tripsList += '<li><a href="/trips/' + trip["id"] + '">' + trip["title"] + '</a>'+ " - " + trip["year"] + '</li>';
-    });
-    tripsList += '</ul>'
-    $("#trips").html(tripsList);
-  });
 
-  $.get("/categories", function(response) {
-    var categories = response;
-    var categoriesList = '<fieldset><legend>Trips by Category</legend><ul>';
-    categories.forEach(function(category) {
-      categoriesList += '<li><a href="/categories/' + category["id"] + '">' + category["name"] + '</a></li>';
-    });
-    categoriesList+='</ul></fieldset>'
-    $("#categories").html(categoriesList);
-  });
 
-})
+function addEventListener() {
+  $('form#add_items').submit(function(event) {
+    event.preventDefault();
+    var values = $(this).serialize();
+    var postingItems = $.post(this.action, values)
+    tripId = parseInt($('#trip')[0].dataset.id)
+    postingItems.done(function(response) {
+      var item_indexes = $('#existing_items input')
+      var name = ""
+      for (var i=0; i < item_indexes.length; i++) {
+        if (item_indexes[i].checked) {
+          name = item_indexes[i].name
+          item_indexes[i].checked = false
+        }
+      }
+
+      if (!name) {
+        name = $('#new_item_name')[0].children[1].value
+        $('#new_item_name')[0].children[1].value = ""
+        html = "<li>" + name + ' - ' + $('#new_item_quantity')[0].children[1].value + "</li>"
+        $('#new_item_quantity')[0].children[1].value = 1
+        $('ul#items').append(html)
+      } else {
+        listItems(tripId)
+      }
+    })
+  })
+}

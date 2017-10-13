@@ -1,5 +1,8 @@
 //= require jquery
 //= require jquery_ujs
-//= require trips
+//= require welcome
+//= require items
 //= require categories
+
+//= require trips
 //= require_tree .

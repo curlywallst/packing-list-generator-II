@@ -1,4 +1,3 @@
-
 <h1 id="js-trip" data-id=<%= @trip.id %>><%=@trip.title%> - <%= @trip.year %> - Destination: <%= @trip.destination %></h2></h1>
 
 <h2>Trip Category: <%= @trip.category.name%></h2>
@@ -6,43 +5,43 @@
 <%= button_to "Delete Trip", {:controller => :trips, :action => 'destroy', :id => @trip.id }, :method => :delete %><br />
 
 <% if user_signed_in? %>
-  <fieldset>
-    <legend>Items To Pack:</legend>
-    <ul>
-      <div id="items"></div>
-      <div id="added_items"></div>
-    </ul>
+<fieldset>
+  <legend>Items To Pack:</legend>
+  <ul>
+    <div id="items"></div>
+    <div id="added_items"></div>
+  </ul>
 
-    <p>Trip Notes: <%= @trip.notes %></p>
-  </fieldset>
+  <p>Trip Notes: <%= @trip.notes %></p>
+</fieldset>
 
-  <%= button_to 'Display List', trip_items_path(@trip), method: :get, params: { display: "display"} %><br />
+<%= button_to 'Display List', trip_items_path(@trip), method: :get, params: { display: "display"} %><br />
 
-  <fieldset>
-    <div id="trip" data-id=<%=@trip.id%> ></div>
-    <%= form_for @trip, html: {id: "add_items"} do |f| %>
-      <legend><h5>Add Items To The List</h5></legend>
-      <div>Select From Existing: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector"><%= @trip.category.name.capitalize %> Trip Items</a> or <a href="#" data-label="all" class="item-selector">All Items</a></div><br />
+<fieldset>
+  <div id="trip" data-id=<%=@trip.id%> ></div>
+  <%= form_for @trip, html: {id: "add_items"} do |f| %>
+    <legend><h5>Add Items To The List</h5></legend>
+    <div>Select From Existing: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector"><%= @trip.category.name.capitalize %> Trip Items</a> or <a href="#" data-label="all" class="item-selector">All Items</a></div><br />
 
-      <div id=existing_items data-label=<%= @trip.category_id%> ></div>
+    <div id=existing_items data-label=<%= @trip.category_id%> ></div>
 
-      <%= f.fields_for :items, @trip.items.build do |item_fields| %><br />
-        <div id=new_item_name>
-          <%= f.label "Add New Item: Name" %>
-          <%= item_fields.text_field :name %>
-        </div>
-      <% end %>
-
-      <br>
-      <%= fields_for @trip_item do |ti| %>
-        <div id=new_item_quantity>
-          <%= ti.label "Item Quantity: " %>
-          <%= ti.number_field :quantity %><br />
-        </div>
-      <% end %>
-      <%= f.submit "Add Item" %>
+    <%= f.fields_for :items, @trip.items.build do |item_fields| %><br />
+      <div id=new_item_name>
+        <%= f.label "Add New Item: Name" %>
+        <%= item_fields.text_field :name %>
+      </div>
     <% end %>
-  </fieldset>
+
+    <br>
+    <%= fields_for @trip_item do |ti| %>
+      <div id=new_item_quantity>
+        <%= ti.label "Item Quantity: " %>
+        <%= ti.number_field :quantity %><br />
+      </div>
+    <% end %>
+    <%= f.submit "Add Item" %>
+  <% end %>
+</fieldset>
 <% end %>
 
 <% if @trip.errors.any? %>
@@ -56,8 +55,7 @@
   </div>
 <% end %>
 
-<script type="text/javascript" charset="utf-8">
-
+<script type="text/javascript">
   $(document).ready(function() {
     tripId = $('#js-trip')[0].dataset.id
     listItems(tripId)
@@ -65,89 +63,4 @@
     $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
     addEventListener()
   })
-
-  function addEventListener() {
-    $('form#add_items').submit(function(event) {
-      event.preventDefault();
-      var values = $(this).serialize();
-      var postingItems = $.post(this.action, values)
-      tripId = parseInt($('#trip')[0].dataset.id)
-      postingItems.done(function(response) {
-        var item_indexes = $('#existing_items input')
-        var name = ""
-        for (var i=0; i < item_indexes.length; i++) {
-          if (item_indexes[i].checked) {
-            name = item_indexes[i].name
-            item_indexes[i].checked = false
-          }
-        }
-
-        if (!name) {
-          name = $('#new_item_name')[0].children[1].value
-          $('#new_item_name')[0].children[1].value = ""
-          html = "<li>" + name + ' - ' + $('#new_item_quantity')[0].children[1].value + "</li>"
-          $('#new_item_quantity')[0].children[1].value = 1
-          $('ul#items').append(html)
-        } else {
-          listItems(tripId)
-        }
-      })
-    })
-  }
-
-  $(function(){
-    $("a.item-selector").on("click", function(e){
-      e.preventDefault();
-      if ($(this).data("label") === 'all'){
-        $.get("/items.json").success(addItemsToExistingForm)
-      } else {
-        var categoryID = $(this).data("category-id");
-        $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
-      }
-      // fire our ajax.
-    })
-  })
-
-  function addItemsToExistingForm(items){
-    function Item(itemJSON){
-      this.id = itemJSON.id
-      this.name = itemJSON.name
-    }
-
-    Item.prototype.itemFormHTML = function(){
-      return `<input type="radio" value="${this.id}" name="trip[item_ids]" id="trip_item_ids_${this.id}">  ${this.name}   `
-    }
-
-    actualItems = []
-
-    items.forEach(function(item) {
-      actualItem = new Item(item)
-      actualItems.push(actualItem)
-    })
-
-    html = " "
-
-    actualItems.forEach(function(actualItem) {
-      html += actualItem.itemFormHTML()
-    })
-
-    $("#existing_items").html(html)
-  }
-
-  function listItems(tripId) {
-    $.get("/trips/" + tripId + "/items", function(response) {
-      var items = response;
-      var itemsList = '<ul id=items>';
-      items.forEach(function(item) {
-        var i = item.trip_items.find(function(tripItem) {return tripItem.trip_id === parseInt(tripId)})
-        itemsList += '<li>' + item.name + ' - ' + i.quantity + '</li>';
-      });
-      itemsList += '</ul>'
-      $("#items").html(itemsList);
-    })
-  }
-
-
-
-
 </script>
