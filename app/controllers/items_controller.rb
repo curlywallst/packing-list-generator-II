@@ -10,14 +10,18 @@ class ItemsController < ApplicationController
         render json: @items
       end
     elsif params[:category_id]
+      # Show all items in category to select from in Show
       @items = Category.find(params[:category_id]).items
       render json: @items
     else
+      # Show all items in all categories to select from in Show
       @items = current_user.trips.collect{|t| t.items}.flatten.uniq
       render json: @items
     end
 
   end
+
+  # post /trips/:trip_id/items
 
   def edit
     @item = Item.find(params[:id])

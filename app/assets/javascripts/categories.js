@@ -1,3 +1,5 @@
+// Get list of Categories and render as links with listeners
+
 $(function () {
   $.get("/categories").success(addCategoriessToPage)
   addCategoryEventListener()

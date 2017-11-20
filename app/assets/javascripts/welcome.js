@@ -28,6 +28,7 @@ function addTripsToPage(trips) {
   })
 
   html += "</ul>"
+
    $("#trips").html(html);
 }
 
@@ -55,5 +56,6 @@ function addCategoriessToPage(categories) {
   })
 
   html += '</ul></fieldset>'
+  
    $("#categories").html(html);
 }

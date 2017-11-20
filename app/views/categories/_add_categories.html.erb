@@ -1,9 +1,11 @@
+<%# Drop down menu tp pick existing category and field to enter new category - for EDIT and NEW TRIP %>
+
 <div class="field_with_errors">
   <fieldset>
     <legend>Select Category</legend>
-
+    <%# Select from drop down of existing categories %>
     <%= f.collection_select(:category_id, current_user.categories.uniq, :id, :name, {:include_blank => true, :prompt => 'Existing Categories'}) %>
-
+    <%# Or add new category %>
     <%= f.fields_for :categories, @categories.build do |categories_fields| %><br />
     <%= f.label "New category " %>
     <%= categories_fields.text_field :name %><br />

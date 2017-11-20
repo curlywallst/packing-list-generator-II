@@ -1,3 +1,5 @@
+//Select to see all or category items
+
 $(function(){
   $("a.item-selector").on("click", function(e){
     e.preventDefault();
@@ -11,6 +13,7 @@ $(function(){
   })
 })
 
+//Add items to form as radio buttons
 function addItemsToExistingForm(items){
   function Item(itemJSON){
     this.id = itemJSON.id
@@ -37,6 +40,7 @@ function addItemsToExistingForm(items){
   $("#existing_items").html(html)
 }
 
+// get items for given trip and list them
 function listItems(tripId) {
   $.get("/trips/" + tripId + "/items", function(response) {
     var items = response;

@@ -1,3 +1,11 @@
+$(document).ready(function() {
+  tripId = $('#js-trip')[0].dataset.id
+  listItems(tripId)
+  var categoryID = parseInt($('#existing_items')[0].dataset.label);
+  $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
+  addEventListener()
+})
+
 function addEventListener() {
   $('form#add_items').submit(function(event) {
     event.preventDefault();

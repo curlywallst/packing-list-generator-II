@@ -3,6 +3,5 @@
 //= require welcome
 //= require items
 //= require categories
-
 //= require trips
 //= require_tree .

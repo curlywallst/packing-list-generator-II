@@ -7,6 +7,8 @@
 <% if user_signed_in? %>
   <fieldset>
     <legend>Items To Pack:</legend>
+
+    <%# Hook to list items in Trip %>
     <div id="items"></div>
 
     <p>Trip Notes: <%= @trip.notes %></p>
@@ -14,15 +16,19 @@
 
   <%= button_to 'Display List', trip_items_path(@trip), method: :get, params: { display: "display"} %><br />
 
+  <%# Form to Add Item to existing Trip %>
   <fieldset>
     <div id="trip" data-id=<%=@trip.id%> ></div>
     <%= form_for @trip, html: {id: "add_items"} do |f| %>
 
       <legend><h5>Add Items To The List</h5></legend>
-      <div>Select From Existing: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector"><%= @trip.category.name.capitalize %> Trip Items</a> or <a href="#" data-label="all" class="item-selector">All Items</a></div><br />
 
+      <%# User select to see either all existing items or all category items %>
+      <div>Select From Existing: <a href="#" data-label="category" data-category-id="<%= @trip.category_id %>" class="item-selector"><%= @trip.category.name.capitalize %> Trip Items</a> or <a href="#" data-label="all" class="item-selector">All Items</a></div><br />
+      <%# Hook for selected existing items list %>
       <div id=existing_items data-label=<%= @trip.category_id%> ></div>
 
+      <%# Input box to add new Item %>
       <%= f.fields_for :items, @trip.items.build do |item_fields| %><br />
         <div id=new_item_name>
           <%= f.label "Add New Item: Name" %>
@@ -32,6 +38,7 @@
 
       <br>
 
+      <%# Input box to select Item Quantity - default = 1 %>
       <%= fields_for @trip_item do |ti| %>
         <div id=new_item_quantity>
           <%= ti.label "Item Quantity: " %>
@@ -55,13 +62,3 @@
     </ul>
   </div>
 <% end %>
-
-<script type="text/javascript">
-  $(document).ready(function() {
-    tripId = $('#js-trip')[0].dataset.id
-    listItems(tripId)
-    var categoryID = parseInt($('#existing_items')[0].dataset.label);
-    $.get(`/items.json?category_id=${categoryID}`).success(addItemsToExistingForm)
-    addEventListener()
-  })
-</script>
