@@ -310,9 +310,9 @@ DEPENDENCIES
   omniauth-facebook
   pry
   rack_session_access
-  rails (= 4.2.7.1)
+  rails
   rspec-rails
-  sass-rails (= 4.0.2)
+  sass-rails
   sdoc (~> 0.4.0)
   selenium-webdriver
   simplecov
